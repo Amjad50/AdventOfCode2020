@@ -7,6 +7,7 @@ use syn::{
 struct DayRange {
     start: LitInt,
     end: LitInt,
+    function_ident: Ident,
 }
 
 impl Parse for DayRange {
@@ -14,14 +15,24 @@ impl Parse for DayRange {
         let start = input.parse()?;
         input.parse::<Token![,]>()?;
         let end = input.parse()?;
+        input.parse::<Token![,]>()?;
+        let function_ident = input.parse()?;
 
-        Ok(Self { start, end })
+        Ok(Self {
+            start,
+            end,
+            function_ident,
+        })
     }
 }
 
 #[proc_macro]
 pub fn build_days(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let DayRange { start, end } = parse_macro_input!(input as DayRange);
+    let DayRange {
+        start,
+        end,
+        function_ident,
+    } = parse_macro_input!(input as DayRange);
 
     let start_n: usize = start.base10_parse().unwrap();
     let end_n: usize = end.base10_parse().unwrap();
@@ -43,7 +54,7 @@ pub fn build_days(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
         let struct_ident = &struct_idents[i - start_n];
 
         quote! {
-            #i => #struct_ident::run,
+            #i => #struct_ident::#function_ident,
         }
     });
 
