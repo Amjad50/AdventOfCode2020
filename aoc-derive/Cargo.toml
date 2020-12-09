@@ -1,5 +1,5 @@
 [package]
-name = "advent_of_code_2020"
+name = "aoc-derive"
 version = "0.1.0"
 authors = ["Amjad Alsharafi <amjadsharafi10@gmail.com>"]
 edition = "2018"
@@ -7,6 +7,10 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-aoc-derive = { path = "aoc-derive" }
-regex = "1.4.2"
-lazy_static = "1.4.0"
+syn = "1.0.54"
+quote = "1.0.7"
+
+
+
+[lib]
+proc-macro = true
