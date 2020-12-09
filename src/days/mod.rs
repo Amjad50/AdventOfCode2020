@@ -5,4 +5,4 @@ pub trait AocDay {
     fn run<R: BufRead>(reader: R);
 }
 
-build_days!(1, 5);
+build_days!(1, 6);
