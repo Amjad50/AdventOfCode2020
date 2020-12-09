@@ -3,7 +3,7 @@ use std::io::BufRead;
 
 pub struct Day3;
 
-fn follow_slop(matrix: &Vec<Vec<bool>>, dx: usize, dy: usize) -> usize {
+fn follow_slop(matrix: &[Vec<bool>], dx: usize, dy: usize) -> usize {
     let height = matrix.len();
     let width = matrix[0].len();
 

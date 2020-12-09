@@ -13,13 +13,7 @@ const EYE_COLORS: [&str; 7] = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"];
 pub struct Day4;
 
 fn is_passport_valid_p1(map: &HashMap<String, String>) -> bool {
-    if map.len() == 8 {
-        true
-    } else if map.len() == 7 && !map.contains_key("cid") {
-        true
-    } else {
-        false
-    }
+    map.len() == 8 || (map.len() == 7 && !map.contains_key("cid"))
 }
 
 fn number_check(value: &str, start: u16, end: u16) -> bool {
@@ -84,7 +78,7 @@ fn is_passport_valid_p2(map: &HashMap<String, String>) -> bool {
                     if value.len() != 9 {
                         return false;
                     }
-                    if let Err(_) = value.parse::<u32>() {
+                    if value.parse::<u32>().is_err() {
                         return false;
                     }
                 }

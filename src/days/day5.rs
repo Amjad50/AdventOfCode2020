@@ -16,7 +16,7 @@ impl AocDay for Day5 {
             })
             .collect::<Vec<u16>>();
 
-        ids.sort();
+        ids.sort_unstable();
 
         println!("Part1: {}", ids.last().unwrap());
 
