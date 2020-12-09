@@ -1,5 +1,5 @@
 mod days;
-use days::{AocDay, Day1, Day2, Day3};
+use days::get_runner;
 use std::env::args;
 use std::fs::File;
 use std::io::{BufReader, Error as ioError};
@@ -10,12 +10,7 @@ fn main() -> Result<(), ioError> {
     if args.len() < 2 {
         eprintln!("USAGE: {} <day>", args[0]);
     } else if let Ok(day) = args[1].parse::<usize>() {
-        let day_runner = match day {
-            1 => Day1::run,
-            2 => Day2::run,
-            3 => Day3::run,
-            _ => todo!("This day is not implemented yet"),
-        };
+        let day_runner = get_runner(day);
 
         let filename = format!("inputs/{}.txt", args[1]);
         day_runner(BufReader::new(File::open(filename)?))
