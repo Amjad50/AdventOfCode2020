@@ -1,5 +1,5 @@
 mod days;
-use days::{AocDay, Day1, Day2};
+use days::{AocDay, Day1, Day2, Day3};
 use std::env::args;
 use std::fs::File;
 use std::io::{BufReader, Error as ioError};
@@ -13,6 +13,7 @@ fn main() -> Result<(), ioError> {
         let day_runner = match day {
             1 => Day1::run,
             2 => Day2::run,
+            3 => Day3::run,
             _ => todo!("This day is not implemented yet"),
         };
 
