@@ -11,7 +11,7 @@ impl AocDay for Day1 {
             .filter_map(|e| e)
             .collect::<Vec<u32>>();
 
-        inputs.sort();
+        inputs.sort_unstable();
 
         let mut part1 = 0;
         let mut part2 = 0;

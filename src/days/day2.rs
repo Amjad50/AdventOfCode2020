@@ -6,7 +6,7 @@ pub struct Day2;
 
 fn is_password_valid_p1(min: usize, max: usize, ch: char, password: &str) -> bool {
     let mut password_bytes = password.to_string().into_bytes();
-    password_bytes.sort();
+    password_bytes.sort_unstable();
 
     let password_bytes_iter = password_bytes.iter().enumerate();
 

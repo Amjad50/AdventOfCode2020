@@ -9,19 +9,17 @@ fn main() -> Result<(), ioError> {
 
     if args.len() < 2 {
         eprintln!("USAGE: {} <day>", args[0]);
-    } else {
-        if let Ok(day) = args[1].parse::<usize>() {
-            let day_runner = match day {
-                1 => Day1::run,
-                2 => Day2::run,
-                _ => todo!("This day is not implemented yet"),
-            };
+    } else if let Ok(day) = args[1].parse::<usize>() {
+        let day_runner = match day {
+            1 => Day1::run,
+            2 => Day2::run,
+            _ => todo!("This day is not implemented yet"),
+        };
 
-            let filename = format!("inputs/{}.txt", args[1]);
-            day_runner(BufReader::new(File::open(filename)?))
-        } else {
-            eprintln!("Please input a valid number for the day");
-        }
+        let filename = format!("inputs/{}.txt", args[1]);
+        day_runner(BufReader::new(File::open(filename)?))
+    } else {
+        eprintln!("Please input a valid number for the day");
     }
 
     Ok(())
