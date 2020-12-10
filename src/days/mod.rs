@@ -11,4 +11,4 @@ pub trait AocDay {
     }
 }
 
-build_days!(1, 9, run_timed);
+build_days!(1, 10, run_timed);
