@@ -78,22 +78,26 @@ impl Cpu {
         let mut pc_counter = 0;
 
         loop {
-            let mut instr = &mut self.instructions[pc_counter];
+            let old_opcode;
 
-            while let Opcode::Acc = instr.opcode {
-                pc_counter += 1;
-                instr = &mut self.instructions[pc_counter];
+            // the reason we use block here, because we want to drop the `&mut`
+            // to `self`, which is being held my `instr`
+            {
+                let mut instr = &mut self.instructions[pc_counter];
+
+                while let Opcode::Acc = instr.opcode {
+                    pc_counter += 1;
+                    instr = &mut self.instructions[pc_counter];
+                }
+
+                old_opcode = instr.opcode;
+
+                instr.opcode = match instr.opcode {
+                    Opcode::Nop => Opcode::Jmp,
+                    Opcode::Jmp => Opcode::Nop,
+                    _ => unreachable!(),
+                };
             }
-
-            let old_opcode = instr.opcode;
-
-            instr.opcode = match instr.opcode {
-                Opcode::Nop => Opcode::Jmp,
-                Opcode::Jmp => Opcode::Nop,
-                _ => unreachable!(),
-            };
-
-            drop(instr);
 
             self.reset();
             if self.try_run() {

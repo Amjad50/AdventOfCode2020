@@ -13,7 +13,7 @@ fn compute_p1(bags_map: &HashMap<String, InnerBags>) -> usize {
     while let Some(current_search) = search_space.pop_front() {
         for (outer, inner) in bags_map {
             // This can be improved
-            if inner.iter().find(|b| b.1 == current_search).is_some() {
+            if inner.iter().any(|b| b.1 == current_search) {
                 search_space.push_back(outer.to_string());
                 result.insert(outer);
             }
@@ -25,7 +25,7 @@ fn compute_p1(bags_map: &HashMap<String, InnerBags>) -> usize {
 
 fn get_bag_inners_size(
     bags_map: &HashMap<String, InnerBags>,
-    bag: &String,
+    bag: &str,
     memoize_map: &mut HashMap<String, usize>,
 ) -> usize {
     if let Some(&result) = memoize_map.get(bag) {
@@ -63,7 +63,7 @@ impl AocDay for Day7 {
 
             let inner_bags = inner_bags_description
                 .filter_map(|b| {
-                    if b.chars().next() == Some('n') {
+                    if b.starts_with('n') {
                         None
                     } else {
                         let b = b.trim_end_matches(" bags").trim_end_matches(" bag");

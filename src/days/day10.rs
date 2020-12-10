@@ -1,7 +1,7 @@
 use super::AocDay;
 use std::io::BufRead;
 
-fn get_jolts_diff_p1(jolts: &Vec<u64>) -> usize {
+fn get_jolts_diff_p1(jolts: &[u64]) -> usize {
     let mut diffs = [0; 3];
 
     for i in 1..jolts.len() {
@@ -13,7 +13,7 @@ fn get_jolts_diff_p1(jolts: &Vec<u64>) -> usize {
     diffs[2] * diffs[0]
 }
 
-fn number_of_arrangements_p2(jolts: &Vec<u64>) -> u64 {
+fn number_of_arrangements_p2(jolts: &[u64]) -> u64 {
     let mut number_of_arrangements = vec![0; jolts.len()];
 
     // build the number of arrangmenets possible for each jolt
@@ -47,10 +47,7 @@ fn number_of_arrangements_p2(jolts: &Vec<u64>) -> u64 {
     }
 
     // skip the 0 at the beginning
-    number_of_arrangements
-        .iter()
-        .skip(1)
-        .fold(1, |acc, d| acc * d)
+    number_of_arrangements.iter().skip(1).product()
 }
 
 pub struct Day10;
@@ -63,7 +60,7 @@ impl AocDay for Day10 {
             .filter_map(|l| l.parse::<u64>().ok())
             .collect();
 
-        jolts.sort();
+        jolts.sort_unstable();
 
         // add the first and last nodes
         jolts.insert(0, 0);

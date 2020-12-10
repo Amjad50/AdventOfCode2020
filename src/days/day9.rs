@@ -4,10 +4,10 @@ use std::io::BufRead;
 // for testing between 5(sample input) and 25
 const SIZE: usize = 25;
 
-fn find_invalid_p1(nums: &Vec<usize>) -> Option<usize> {
+fn find_invalid_p1(nums: &[usize]) -> Option<usize> {
     for i in SIZE..nums.len() {
         let mut pre = nums[(i - SIZE)..i].to_vec();
-        pre.sort();
+        pre.sort_unstable();
 
         let current_num = nums[i];
 
@@ -27,8 +27,8 @@ fn find_invalid_p1(nums: &Vec<usize>) -> Option<usize> {
     None
 }
 
-fn find_weakness_p2(nums: &Vec<usize>, invalid: usize) -> Option<usize> {
-    assert!(nums.len() > 0);
+fn find_weakness_p2(nums: &[usize], invalid: usize) -> Option<usize> {
+    assert!(!nums.is_empty());
 
     let mut start_i = 0;
     let mut end_i = 1;
@@ -43,7 +43,7 @@ fn find_weakness_p2(nums: &Vec<usize>, invalid: usize) -> Option<usize> {
             }
             std::cmp::Ordering::Equal => {
                 let mut result = nums[start_i..end_i].to_vec();
-                result.sort();
+                result.sort_unstable();
 
                 return Some(result.first()? + result.last()?);
             }
