@@ -1,7 +1,4 @@
-use super::AocDay;
-use std::io::BufRead;
-
-pub struct Day3;
+use aoc_derive::impl_day;
 
 fn follow_slop(matrix: &[Vec<bool>], dx: usize, dy: usize) -> usize {
     let height = matrix.len();
@@ -22,26 +19,24 @@ fn follow_slop(matrix: &[Vec<bool>], dx: usize, dy: usize) -> usize {
     trees_counter
 }
 
-impl AocDay for Day3 {
-    fn run<R: BufRead>(reader: R) {
-        // matrix of booleans, true means that there is a tree, false means that there
-        // is no tree (empty space)
-        let matrix = reader
-            .lines()
-            .filter_map(|l| {
-                l.ok()
-                    .map(|l| l.chars().map(|c| c == '#').collect::<Vec<bool>>())
-            })
-            .collect::<Vec<Vec<bool>>>();
+impl_day!(3, |reader| {
+    // matrix of booleans, true means that there is a tree, false means that there
+    // is no tree (empty space)
+    let matrix = reader
+        .lines()
+        .filter_map(|l| {
+            l.ok()
+                .map(|l| l.chars().map(|c| c == '#').collect::<Vec<bool>>())
+        })
+        .collect::<Vec<Vec<bool>>>();
 
-        println!("Part1: {}", follow_slop(&matrix, 3, 1));
-        println!(
-            "Part2: {}",
-            follow_slop(&matrix, 1, 1)
-                * follow_slop(&matrix, 3, 1)
-                * follow_slop(&matrix, 5, 1)
-                * follow_slop(&matrix, 7, 1)
-                * follow_slop(&matrix, 1, 2)
-        );
-    }
-}
+    println!("Part1: {}", follow_slop(&matrix, 3, 1));
+    println!(
+        "Part2: {}",
+        follow_slop(&matrix, 1, 1)
+            * follow_slop(&matrix, 3, 1)
+            * follow_slop(&matrix, 5, 1)
+            * follow_slop(&matrix, 7, 1)
+            * follow_slop(&matrix, 1, 2)
+    );
+});

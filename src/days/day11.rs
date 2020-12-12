@@ -1,5 +1,4 @@
-use super::AocDay;
-use std::io::BufRead;
+use aoc_derive::impl_day;
 
 type NearbySearchFunc = fn(&Vec<Vec<char>>, usize, usize, usize, usize) -> usize;
 
@@ -114,20 +113,17 @@ fn get_occupied(
     matrix.iter().flatten().filter(|&c| c == &'#').count()
 }
 
-pub struct Day11;
-impl AocDay for Day11 {
-    fn run<R: BufRead>(reader: R) {
-        let matrix: Vec<Vec<char>> = reader
-            .lines()
-            .filter_map(|l| l.ok())
-            .take_while(|l| !l.is_empty())
-            .map(|l| l.chars().collect::<Vec<char>>())
-            .collect();
+impl_day!(11, |reader| {
+    let matrix: Vec<Vec<char>> = reader
+        .lines()
+        .filter_map(|l| l.ok())
+        .take_while(|l| !l.is_empty())
+        .map(|l| l.chars().collect::<Vec<char>>())
+        .collect();
 
-        let p1 = get_occupied(matrix.to_vec(), nearby_search_p1, 4);
-        let p2 = get_occupied(matrix.to_vec(), nearby_search_p2, 5);
+    let p1 = get_occupied(matrix.to_vec(), nearby_search_p1, 4);
+    let p2 = get_occupied(matrix.to_vec(), nearby_search_p2, 5);
 
-        println!("Part1: {}", p1);
-        println!("Part2: {}", p2);
-    }
-}
+    println!("Part1: {}", p1);
+    println!("Part2: {}", p2);
+});

@@ -1,5 +1,4 @@
-use super::AocDay;
-use std::io::BufRead;
+use aoc_derive::impl_day;
 
 fn get_jolts_diff_p1(jolts: &[u64]) -> usize {
     let mut diffs = [0; 3];
@@ -50,26 +49,23 @@ fn number_of_arrangements_p2(jolts: &[u64]) -> u64 {
     number_of_arrangements.iter().skip(1).product()
 }
 
-pub struct Day10;
-impl AocDay for Day10 {
-    fn run<R: BufRead>(reader: R) {
-        let mut jolts: Vec<_> = reader
-            .lines()
-            .filter_map(|l| l.ok())
-            .take_while(|l| !l.is_empty())
-            .filter_map(|l| l.parse::<u64>().ok())
-            .collect();
+impl_day!(10, |reader| {
+    let mut jolts: Vec<_> = reader
+        .lines()
+        .filter_map(|l| l.ok())
+        .take_while(|l| !l.is_empty())
+        .filter_map(|l| l.parse::<u64>().ok())
+        .collect();
 
-        jolts.sort_unstable();
+    jolts.sort_unstable();
 
-        // add the first and last nodes
-        jolts.insert(0, 0);
-        jolts.push(jolts.last().unwrap() + 3);
+    // add the first and last nodes
+    jolts.insert(0, 0);
+    jolts.push(jolts.last().unwrap() + 3);
 
-        let p1 = get_jolts_diff_p1(&jolts);
-        let p2 = number_of_arrangements_p2(&jolts);
+    let p1 = get_jolts_diff_p1(&jolts);
+    let p2 = number_of_arrangements_p2(&jolts);
 
-        println!("Part1: {}", p1);
-        println!("Part2: {}", p2);
-    }
-}
+    println!("Part1: {}", p1);
+    println!("Part2: {}", p2);
+});

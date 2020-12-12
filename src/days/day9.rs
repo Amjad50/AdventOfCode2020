@@ -1,5 +1,4 @@
-use super::AocDay;
-use std::io::BufRead;
+use aoc_derive::impl_day;
 
 // for testing between 5(sample input) and 25
 const SIZE: usize = 25;
@@ -63,20 +62,17 @@ fn find_weakness_p2(nums: &[usize], invalid: usize) -> Option<usize> {
     None
 }
 
-pub struct Day9;
-impl AocDay for Day9 {
-    fn run<R: BufRead>(reader: R) {
-        let nums: Vec<_> = reader
-            .lines()
-            .filter_map(|l| l.ok())
-            .take_while(|l| !l.is_empty())
-            .filter_map(|l| l.parse::<usize>().ok())
-            .collect();
+impl_day!(9, |reader| {
+    let nums: Vec<_> = reader
+        .lines()
+        .filter_map(|l| l.ok())
+        .take_while(|l| !l.is_empty())
+        .filter_map(|l| l.parse::<usize>().ok())
+        .collect();
 
-        let p1 = find_invalid_p1(&nums).unwrap();
-        let p2 = find_weakness_p2(&nums, p1).unwrap();
+    let p1 = find_invalid_p1(&nums).unwrap();
+    let p2 = find_weakness_p2(&nums, p1).unwrap();
 
-        println!("Part1: {}", p1);
-        println!("Part2: {}", p2);
-    }
-}
+    println!("Part1: {}", p1);
+    println!("Part2: {}", p2);
+});

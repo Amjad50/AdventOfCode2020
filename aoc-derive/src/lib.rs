@@ -1,7 +1,8 @@
+use proc_macro::TokenStream;
 use quote::{format_ident, quote};
 use syn::{
     parse::{Parse, ParseStream},
-    parse_macro_input, Ident, LitInt, Token,
+    parse_macro_input, ExprBlock, Ident, LitInt, Token,
 };
 
 struct DayRange {
@@ -27,7 +28,7 @@ impl Parse for DayRange {
 }
 
 #[proc_macro]
-pub fn build_days(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn build_days(input: TokenStream) -> TokenStream {
     let DayRange {
         start,
         end,
@@ -66,6 +67,53 @@ pub fn build_days(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                 #(#match_cases)*
                 _ => todo!("This day is not implemented yet"),
             }
+        }
+    };
+
+    q.into()
+}
+
+struct DayImpl {
+    day: LitInt,
+    buf_read_ident_mut: Option<syn::token::Mut>,
+    buf_read_ident: Ident,
+    impl_block: ExprBlock,
+}
+
+impl Parse for DayImpl {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        let day = input.parse()?;
+        input.parse::<Token![,]>()?;
+        input.parse::<Token![|]>()?;
+        let buf_read_ident_mut = input.parse::<Token![mut]>().ok();
+        let buf_read_ident = input.parse()?;
+        input.parse::<Token![|]>()?;
+        let impl_block = input.parse()?;
+
+        Ok(Self {
+            day,
+            buf_read_ident_mut,
+            buf_read_ident,
+            impl_block,
+        })
+    }
+}
+
+#[proc_macro]
+pub fn impl_day(input: TokenStream) -> TokenStream {
+    let DayImpl {
+        day,
+        buf_read_ident_mut,
+        buf_read_ident,
+        impl_block,
+    } = parse_macro_input!(input as DayImpl);
+    let struct_ident = format_ident!("Day{}", format!("{}", day));
+
+    let q = quote! {
+        pub struct #struct_ident;
+
+        impl ::aoc_common::AocDay for #struct_ident {
+            fn run<R: ::std::io::BufRead>(#buf_read_ident_mut #buf_read_ident: R) #impl_block
         }
     };
 

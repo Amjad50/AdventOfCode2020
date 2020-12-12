@@ -1,6 +1,5 @@
-use super::AocDay;
+use aoc_derive::impl_day;
 use std::collections::HashSet;
-use std::io::BufRead;
 
 #[derive(Debug, Clone, Copy)]
 enum Opcode {
@@ -112,31 +111,28 @@ impl Cpu {
     }
 }
 
-pub struct Day8;
-impl AocDay for Day8 {
-    fn run<R: BufRead>(reader: R) {
-        let instructions = reader
-            .lines()
-            .filter_map(|l| l.ok())
-            .take_while(|l| !l.is_empty())
-            .map(|line| Instruction::from_string(&line))
-            .collect::<Vec<Instruction>>();
+impl_day!(8, |reader| {
+    let instructions = reader
+        .lines()
+        .filter_map(|l| l.ok())
+        .take_while(|l| !l.is_empty())
+        .map(|line| Instruction::from_string(&line))
+        .collect::<Vec<Instruction>>();
 
-        let mut cpu = Cpu {
-            instructions,
-            ..Cpu::default()
-        };
+    let mut cpu = Cpu {
+        instructions,
+        ..Cpu::default()
+    };
 
-        // assert that we are in an infinite loop
-        assert!(!cpu.try_run());
-        let p1 = cpu.a;
+    // assert that we are in an infinite loop
+    assert!(!cpu.try_run());
+    let p1 = cpu.a;
 
-        cpu.find_and_fix_bug();
-        // assert that we can run the code without infinite loop
-        assert!(cpu.try_run());
-        let p2 = cpu.a;
+    cpu.find_and_fix_bug();
+    // assert that we can run the code without infinite loop
+    assert!(cpu.try_run());
+    let p2 = cpu.a;
 
-        println!("Part1: {}", p1);
-        println!("Part2: {}", p2);
-    }
-}
+    println!("Part1: {}", p1);
+    println!("Part2: {}", p2);
+});

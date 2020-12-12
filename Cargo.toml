@@ -8,5 +8,6 @@ edition = "2018"
 
 [dependencies]
 aoc-derive = { path = "aoc-derive" }
+aoc-common = { path = "aoc-common" }
 regex = "1.4.2"
 lazy_static = "1.4.0"

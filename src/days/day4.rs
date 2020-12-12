@@ -1,16 +1,13 @@
-use super::AocDay;
+use aoc_derive::impl_day;
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::collections::HashMap;
-use std::io::BufRead;
 
 lazy_static! {
     static ref HEXRE: Regex = Regex::new(r"[0-9a-f]{6}").unwrap();
 }
 
 const EYE_COLORS: [&str; 7] = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"];
-
-pub struct Day4;
 
 fn is_passport_valid_p1(map: &HashMap<String, String>) -> bool {
     map.len() == 8 || (map.len() == 7 && !map.contains_key("cid"))
@@ -91,38 +88,36 @@ fn is_passport_valid_p2(map: &HashMap<String, String>) -> bool {
     }
 }
 
-impl AocDay for Day4 {
-    fn run<R: BufRead>(reader: R) {
-        let mut map = HashMap::new();
-        let mut p1 = 0u32;
-        let mut p2 = 0u32;
+impl_day!(4, |reader| {
+    let mut map = HashMap::new();
+    let mut p1 = 0u32;
+    let mut p2 = 0u32;
 
-        // for easier duplication of code
-        macro_rules! validate_map {
-            () => {
-                p1 += is_passport_valid_p1(&map) as u32;
-                p2 += is_passport_valid_p2(&map) as u32;
-                map.clear();
-            };
-        }
+    // for easier duplication of code
+    macro_rules! validate_map {
+        () => {
+            p1 += is_passport_valid_p1(&map) as u32;
+            p2 += is_passport_valid_p2(&map) as u32;
+            map.clear();
+        };
+    }
 
-        for line in reader.lines().filter_map(|l| l.ok()) {
-            if line.is_empty() {
-                validate_map!();
-            } else {
-                for split in line.split(' ') {
-                    let field = split.split(':').take(2).collect::<Vec<&str>>();
+    for line in reader.lines().filter_map(|l| l.ok()) {
+        if line.is_empty() {
+            validate_map!();
+        } else {
+            for split in line.split(' ') {
+                let field = split.split(':').take(2).collect::<Vec<&str>>();
 
-                    assert_eq!(field.len(), 2);
+                assert_eq!(field.len(), 2);
 
-                    map.insert(field[0].to_string(), field[1].to_string());
-                }
+                map.insert(field[0].to_string(), field[1].to_string());
             }
         }
-
-        validate_map!();
-
-        println!("Part1: {}", p1);
-        println!("Part2: {}", p2);
     }
-}
+
+    validate_map!();
+
+    println!("Part1: {}", p1);
+    println!("Part2: {}", p2);
+});

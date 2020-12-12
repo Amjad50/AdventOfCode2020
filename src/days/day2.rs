@@ -1,8 +1,5 @@
-use super::AocDay;
+use aoc_derive::impl_day;
 use regex::Regex;
-use std::io::BufRead;
-
-pub struct Day2;
 
 fn is_password_valid_p1(min: usize, max: usize, ch: char, password: &str) -> bool {
     let mut password_bytes = password.to_string().into_bytes();
@@ -38,29 +35,27 @@ fn is_password_valid_p2(first: usize, second: usize, ch: char, password: &str) -
     (chars.get(first - 1) == Some(&ch)) ^ (chars.get(second - 1) == Some(&ch))
 }
 
-impl AocDay for Day2 {
-    fn run<R: BufRead>(mut reader: R) {
-        let mut input = String::new();
-        reader.read_to_string(&mut input).unwrap();
+impl_day!(2, |mut reader| {
+    let mut input = String::new();
+    reader.read_to_string(&mut input).unwrap();
 
-        let re = Regex::new(r"(\d{1,5})-(\d{1,5}) ([a-z]): ([a-z]*)").unwrap();
+    let re = Regex::new(r"(\d{1,5})-(\d{1,5}) ([a-z]): ([a-z]*)").unwrap();
 
-        let mut p1_counter = 0;
-        let mut p2_counter = 0;
+    let mut p1_counter = 0;
+    let mut p2_counter = 0;
 
-        for cap in re.captures_iter(&input) {
-            let (first, second, ch, password) = (
-                cap[1].parse::<usize>().unwrap(),
-                cap[2].parse::<usize>().unwrap(),
-                cap[3].chars().next().unwrap(),
-                &cap[4],
-            );
+    for cap in re.captures_iter(&input) {
+        let (first, second, ch, password) = (
+            cap[1].parse::<usize>().unwrap(),
+            cap[2].parse::<usize>().unwrap(),
+            cap[3].chars().next().unwrap(),
+            &cap[4],
+        );
 
-            p1_counter += is_password_valid_p1(first, second, ch, password) as u32;
-            p2_counter += is_password_valid_p2(first, second, ch, password) as u32;
-        }
-
-        println!("Part1: {}", p1_counter);
-        println!("Part2: {}", p2_counter);
+        p1_counter += is_password_valid_p1(first, second, ch, password) as u32;
+        p2_counter += is_password_valid_p2(first, second, ch, password) as u32;
     }
-}
+
+    println!("Part1: {}", p1_counter);
+    println!("Part2: {}", p2_counter);
+});
