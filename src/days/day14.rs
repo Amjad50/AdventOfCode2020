@@ -88,11 +88,16 @@ impl_day!(14, |reader| {
         .take_while(|l| !l.is_empty())
         .filter_map(|l| {
             if let Some(l) = l.strip_prefix("mask = ") {
-                let and_mask = l.replace('1', "0").replace('X', "1");
-                let and_mask = u64::from_str_radix(&and_mask, 2).unwrap();
+                let mut and_mask: u64 = 0;
+                let mut value_override: u64 = 0;
 
-                let value_override = l.replace('X', "0");
-                let value_override = u64::from_str_radix(&value_override, 2).unwrap();
+                for (i, c) in l.chars().enumerate() {
+                    if c == 'X' {
+                        and_mask |= 1 << (35 - i)
+                    } else {
+                        value_override |= (c as u64 - '0' as u64) << (35 - i)
+                    }
+                }
 
                 Some(Operation::Mask(MaskInfo {
                     mask_str: l.to_string(),
