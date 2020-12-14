@@ -5,6 +5,14 @@ use syn::{
     parse_macro_input, ExprBlock, Ident, LitInt, Token,
 };
 
+fn create_day_ident(day: usize, capitalize: bool) -> Ident {
+    format_ident!(
+        "{}ay{}",
+        if capitalize { 'D' } else { 'd' },
+        format!("{:02}", day)
+    )
+}
+
 struct DayRange {
     start: LitInt,
     end: LitInt,
@@ -38,11 +46,11 @@ pub fn build_days(input: TokenStream) -> TokenStream {
     let start_n: usize = start.base10_parse().unwrap();
     let end_n: usize = end.base10_parse().unwrap();
     let struct_idents = (start_n..=end_n)
-        .map(|i| format_ident!("Day{}", format!("{}", i)))
+        .map(|i| create_day_ident(i, true))
         .collect::<Vec<Ident>>();
 
     let imports = (start_n..=end_n).map(|i| {
-        let crate_ident = format_ident!("day{}", format!("{}", i));
+        let crate_ident = create_day_ident(i, false);
         let struct_ident = &struct_idents[i - start_n];
 
         quote! {
@@ -107,7 +115,7 @@ pub fn impl_day(input: TokenStream) -> TokenStream {
         buf_read_ident,
         impl_block,
     } = parse_macro_input!(input as DayImpl);
-    let struct_ident = format_ident!("Day{}", format!("{}", day));
+    let struct_ident = create_day_ident(day.base10_parse::<usize>().unwrap(), true);
 
     let q = quote! {
         pub struct #struct_ident;

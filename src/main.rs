@@ -13,7 +13,7 @@ fn main() -> Result<(), ioError> {
     } else if let Ok(day) = args[1].parse::<usize>() {
         let day_runner = get_runner(day);
 
-        let filename = format!("inputs/{}.txt", args[1]);
+        let filename = format!("inputs/{:02}.txt", day);
         day_runner(BufReader::new(File::open(filename)?))
     } else {
         eprintln!("Please input a valid number for the day");
