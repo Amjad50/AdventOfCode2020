@@ -3,19 +3,6 @@ use std::collections::HashMap;
 
 const BIT_36: u64 = 0xFFFFFFFFF;
 
-/// return a 36 bit string
-fn convert_to_base_2(mut val: u64) -> String {
-    let mut result = String::with_capacity(36);
-
-    for _ in 0..36 {
-        let bit = val % 2;
-        val /= 2;
-        result.insert(0, ('0' as u8 + bit as u8) as char);
-    }
-
-    result
-}
-
 #[derive(Debug, Default)]
 struct MaskInfo {
     mask_str: String,
@@ -33,6 +20,7 @@ enum Operation {
 struct DockingSystem {
     memory: HashMap<u64, u64>,
     mask_info: MaskInfo,
+    floating_bits_buffer: Vec<usize>,
 }
 
 impl DockingSystem {
@@ -49,34 +37,15 @@ impl DockingSystem {
     }
 
     fn put_mem_v2(&mut self, addr: u64, val: u64) {
-        let addr = addr | self.mask_info.value_override;
-        let addr_str = convert_to_base_2(addr & BIT_36);
+        let addr = addr & (self.mask_info.and_mask ^ BIT_36);
+        let addr_unfloated = addr | self.mask_info.value_override;
 
-        let addr_str: String = addr_str
-            .chars()
-            .zip(self.mask_info.mask_str.chars())
-            .map(|(c1, c2)| if c2 == 'X' { 'X' } else { c1 })
-            .collect();
-
-        let x_n = addr_str.chars().filter(|x| x == &'X').count();
-
-        for i in 0..2u64.pow(x_n as u32) {
-            let xs_str = convert_to_base_2(i);
-            let mut xs_chars = xs_str.chars().rev();
-
-            let current_addr_formation_str: String = addr_str
-                .chars()
-                .map(|c| {
-                    if c == 'X' {
-                        xs_chars.next().unwrap()
-                    } else {
-                        c
-                    }
-                })
-                .collect();
-
-            let current_addr = u64::from_str_radix(&current_addr_formation_str, 2).unwrap();
-
+        for i in 0..2u64.pow(self.floating_bits_buffer.len() as u32) {
+            let mut current_addr = addr_unfloated;
+            for (j, floating_index) in self.floating_bits_buffer.iter().enumerate() {
+                let bit = (i >> j) & 1;
+                current_addr |= bit << floating_index;
+            }
             self.memory.insert(current_addr, val);
         }
     }
@@ -89,6 +58,12 @@ impl DockingSystem {
                         mask_str: mask_info.mask_str.to_string(),
                         ..*mask_info
                     };
+                    // reload floating_bits buffer when mask is changed
+                    self.floating_bits_buffer.clear();
+                    let and_mask = self.mask_info.and_mask;
+
+                    self.floating_bits_buffer
+                        .extend((0..36).filter(|i| and_mask & (1 << i) != 0));
                 }
                 &Operation::Mem { addr, val } => {
                     if v2 {
